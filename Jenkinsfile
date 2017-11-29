@@ -68,7 +68,7 @@ tar  -cvvzf pipeline-lchernysheva-$BUILD_NUMBER.tar.gz /var/lib/jenkins/workspac
                 input 'Are you want to deploy artifacts?'}
         }
                          
-        stage ("Deployment'{
+        stage ("Deployment") {
 		steps {
 			sh '''#!/bin/bash
 java -jar gradle-simple.jar'''
