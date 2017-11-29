@@ -38,7 +38,7 @@ pipeline {
                             label "master"
                              }
                         steps {
-				sh 'gradle cucmber
+				sh 'gradle cucmber'
             			//Artifactory.newGradleBuild().run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks: 'cucumber'
                         }
 					}
