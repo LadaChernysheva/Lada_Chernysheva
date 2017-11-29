@@ -30,6 +30,7 @@ pipeline {
                         steps {
             				rtGradle.run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks: 'cucumber'
                         }
+					}
                      stage('JUnit Tests') {
                         agent { 
                             label "FIRST"
@@ -37,6 +38,7 @@ pipeline {
                         steps {
             				rtGradle.run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks: 'clean test'
                         }
+                     }
                          stage('Jacoco Tests') {
                         agent { 
                             label "SECOND"
@@ -45,6 +47,9 @@ pipeline {
             				rtGradle.run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks: 'jacoco'
                         }
                      }
+				}
+			}
+		}
                          
         stage 'Triggering job and fetching artefact after finishing'{
        		 build job: 'Project MNTLAB-lchernysheva-child1-build-job', parameters: [string(name: 'BRANCH_NAME', value: lchernysheva)], quietPeriod: 2 
@@ -66,7 +71,7 @@ tar  -cvvzf pipeline-lchernysheva-$BUILD_NUMBER.tar.gz /var/lib/jenkins/workspac
 		steps {
 			sh '''#!/bin/bash
 java -jar gradle-simple.jar'''
-		}
+			}
         }
                          
         stage 'Sending status'{
