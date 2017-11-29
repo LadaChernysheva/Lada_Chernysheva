@@ -1,33 +1,34 @@
-#!groovy
-
-node { 
-    def rtGradle = Artifactory.newGradleBuild()
-    def buildInfo = Artifactory.newBuildInfo()
-	
+pipeline {
+	enviroment {
+	def rtGradle = Artifactory.newGradleBuild()
+	def buildInfo = Artifactory.newBuildInfo()
+	}
+    
     agent none
     options{
         timestamp()
         ansiColor('xterm')
     }
-   
-
-  //  stages {
+	
+    stages {
         stage ("Preparation (Checking out)") {
-            //agent any
-           // steps{
+            agent any
+            steps {
                 git url: 'https://github.com/bubalush/mntlab-pipeline.git'
                 rtGradle.tool = 'grandle4.3'
-            //}
+            }
         }
         
         stage ("Building code") {
+		steps {
            rtGradle.run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks:'clean compile'
-        }
+        	}
+	}
         
         stage ("Testing code") {
             steps {
                 parallel{
-                    "Cucumber Tests" : {
+                    stage("Cucumber Tests") {
                         agent { 
                             label "master"
                              }
@@ -35,53 +36,55 @@ node {
             				rtGradle.run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks: 'cucumber'
                         }
 					}
-                     "JUnit Tests" : {
+                     stage("JUnit Tests") {
                         agent { 
                             label "FIRST"
                              }
-                   //     steps {
-            				rtGradle.run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks: 'clean test'
-                       // }
+                        steps {
+            			rtGradle.run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks: 'clean test'
+                        }
                      }
-                         "Jacoco Tests" : {
+                         stage("Jacoco Tests") {
                         agent { 
                             label "SECOND"
                              }
-                       // steps {
-            				rtGradle.run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks: 'jacoco'
-                       // }
+                        steps {
+            			rtGradle.run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks: 'jacoco'
+                        }
                      }
-				}
-			}
-		}
+		  }
+	       }
+	    }
                          
         stage ("Triggering job and fetching artefact after finishing") {
+		steps {
        		 build job: 'Project MNTLAB-lchernysheva-child1-build-job', parameters: [string(name: 'BRANCH_NAME', value: lchernysheva)], quietPeriod: 2 
-        }
+        	}
+	}
                          
         stage ("Packaging and Publishing results") {
-           // steps {
+            steps {
             	sh '''#!/bin/bash
 tar  -cvvzf pipeline-lchernysheva-$BUILD_NUMBER.tar.gz /var/lib/jenkins/workspace/MNTLAB-lchernysheva-child1-build-job/jobs.groovy /var/lib/jenkins/workspace/seed_for_Task10/Jenkinsfile'''
-                archiveArtifacts '**.tar.gz'//}
+                archiveArtifacts '**.tar.gz'}
         }
                          
         stage ("Asking for manual approval") {
-          //  steps {
-                input 'Are you want to deploy artifacts?'//}
+            steps {
+                input 'Are you want to deploy artifacts?'}
         }
                          
         stage ("Deployment") {
-		//steps {
+		steps {
 			sh '''#!/bin/bash
 java -jar gradle-simple.jar'''
-			//}
+			}
         }
                          
         stage ("Sending status") {
-           // steps {
+            steps {
                 echo 'Pipeline was completed with \'SUCCESS\''
-            //}
+            }
         }
-    //}
+    }
 }
