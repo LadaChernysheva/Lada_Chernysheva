@@ -31,7 +31,7 @@ pipeline {
 	}
         
         stage ("Testing code") {
-		agent none
+		//agent none
 		parallel{
                     stage("Cucumber Tests") {
                         agent { label "master"}
