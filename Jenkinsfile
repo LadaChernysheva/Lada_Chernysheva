@@ -1,9 +1,9 @@
 pipeline {
     agent any
-    environment {
-	def rtGradle = Artifactory.newGradleBuild()
-	def buildInfo = Artifactory.newBuildInfo()
-    }
+    /**environment {
+	env.rtGradle = Artifactory.newGradleBuild()
+	env.buildInfo = Artifactory.newBuildInfo()
+    }*/
     options{
         timestamp()
         ansiColor('xterm')
@@ -14,13 +14,13 @@ pipeline {
             agent any
             steps {
                 git url: 'https://github.com/bubalush/mntlab-pipeline.git'
-                rtGradle.tool = 'grandle4.3'
+                rtifactory.newGradleBuild().tool = 'grandle4.3'
             }
         }
         
         stage ("Building code") {
 		steps {
-           rtGradle.run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks:'clean compile'
+           Artifactory.newGradleBuild().run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks:'clean compile'
         	}
 	}
         
@@ -32,7 +32,7 @@ pipeline {
                             label "master"
                              }
                         steps {
-            				rtGradle.run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks: 'cucumber'
+            			Artifactory.newGradleBuild().run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks: 'cucumber'
                         }
 					}
                      stage("JUnit Tests") {
@@ -40,7 +40,7 @@ pipeline {
                             label "FIRST"
                              }
                         steps {
-            			rtGradle.run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks: 'clean test'
+            			Artifactory.newGradleBuild().run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks: 'clean test'
                         }
                      }
                          stage("Jacoco Tests") {
@@ -48,7 +48,7 @@ pipeline {
                             label "SECOND"
                              }
                         steps {
-            			rtGradle.run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks: 'jacoco'
+            			Artifactory.newGradleBuild().run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks: 'jacoco'
                         }
                      }
 		  }
