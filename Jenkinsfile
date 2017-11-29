@@ -31,38 +31,31 @@ pipeline {
 	}
         
         stage ("Testing code") {
-            steps {
-                parallel{
+		agent none
+		parallel{
                     stage("Cucumber Tests") {
-                        agent { 
-                            label "master"
-                             }
+                        agent { label "master"}
                         steps {
 				sh 'gradle cucmber'
             			//Artifactory.newGradleBuild().run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks: 'cucumber'
                         }
 					}
                      stage("JUnit Tests") {
-                        agent { 
-                            label "FIRST"
-                             }
+                        agent {label "FIRST"}
                         steps {
 				sh 'gradle clean test'
             			//Artifactory.newGradleBuild().run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks: 'clean test'
                         }
                      }
                          stage("Jacoco Tests") {
-                        agent { 
-                            label "SECOND"
-                             }
-                        steps {
-            			sh 'gradle jacoco'
+                        agent {label "SECOND"}
+                        steps {sh 'gradle jacoco'
 				//Artifactory.newGradleBuild().run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks: 'jacoco'
                         }
                      }
-		  }
+				}
 	       }
-	    }
+	    
                          
         stage ("Triggering job and fetching artefact after finishing") {
 		agent any
