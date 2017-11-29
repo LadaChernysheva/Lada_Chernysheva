@@ -21,7 +21,7 @@ pipeline {
            rtGradle.run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks:'clean compile'
         }
         
-        stage ("Testing code'{
+        stage ("Testing code") {
             steps {
                 parallel{
                     stage("Cucumber Tests") {
