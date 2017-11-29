@@ -25,7 +25,7 @@ pipeline {
         stage ("Building code") {
 		agent any
 		steps {
-			sh 'gradle clean compile'
+			sh 'gradle clean compileJava'
           // Artifactory.newGradleBuild().run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks:'clean compile'
         	}
 	}
@@ -43,7 +43,7 @@ pipeline {
                      stage("JUnit Tests") {
                         agent {label "FIRST"}
                         steps {
-				sh 'gradle clean test'
+				sh 'gradle clean compileTestJava'
             			//Artifactory.newGradleBuild().run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks: 'clean test'
                         }
                      }
