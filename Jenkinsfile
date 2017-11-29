@@ -1,10 +1,9 @@
 pipeline {
-	enviroment {
+    agent any
+    environment {
 	def rtGradle = Artifactory.newGradleBuild()
 	def buildInfo = Artifactory.newBuildInfo()
-	}
-    
-    agent none
+    }
     options{
         timestamp()
         ansiColor('xterm')
