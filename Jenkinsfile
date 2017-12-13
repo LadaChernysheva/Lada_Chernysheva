@@ -3,30 +3,19 @@ pipeline {
 	tools {
         gradle "gradle4.3"
     }
-
-    /**environment {
-	env.rtGradle = Artifactory.newGradleBuild()
-	env.buildInfo = Artifactory.newBuildInfo()
-    }
-    options{
-        timestamp()
-        ansiColor('xterm')
-    }*/
-	
+  	
     stages {
         stage ("Preparation (Checking out)") {
             agent any
             steps {
                 git url: 'https://github.com/bubalush/mntlab-pipeline.git'
-                //Artifactory.newGradleBuild().tool = 'grandle4.3'
-            }
+                }
         }
         
         stage ("Building code") {
 		agent any
 		steps {
 			sh 'gradle clean compileJava'
-          // Artifactory.newGradleBuild().run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks:'clean compile'
         	}
 	}
         
@@ -36,22 +25,16 @@ pipeline {
                     stage("Cucumber Tests") {
                         agent { label "master"}
                         steps {
-				sh 'gradle cucumber'
-            			//Artifactory.newGradleBuild().run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks: 'cucumber'
-                        }
+				sh 'gradle cucumber'}
 					}
                      stage("JUnit Tests") {
                         agent {label "FIRST"}
                         steps {
-				sh 'gradle clean compileTestJava'
-            			//Artifactory.newGradleBuild().run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks: 'clean test'
-                        }
+				sh 'gradle test'}
                      }
                          stage("Jacoco Tests") {
                         agent {label "SECOND"}
-                        steps {sh 'gradle jacoco'
-				//Artifactory.newGradleBuild().run rootDir: '/var/lib/jenkins/workspace/Task_10/', buildFile: 'build.gradle', tasks: 'jacoco'
-                        }
+                        steps {sh 'gradle jacocoTestReport'}
                      }
 				}
 	       }
