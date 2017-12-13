@@ -30,11 +30,11 @@ pipeline {
                      stage("JUnit Tests") {
                         agent {label "FIRST"}
                         steps {
-				sh 'gradle test'}
+				sh 'gradle test compileTestJava'}
                      }
                          stage("Jacoco Tests") {
                         agent {label "SECOND"}
-                        steps {sh 'gradle jacocoTestReport'}
+                        steps {sh 'gradle test jacocoTestReport'}
                      }
 				}
 	       }
