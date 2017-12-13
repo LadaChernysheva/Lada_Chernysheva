@@ -30,11 +30,14 @@ pipeline {
                      stage("JUnit Tests") {
                         agent {label "FIRST"}
                         steps {
-				sh 'gradle compileTestJava'}
+				git url: 'https://github.com/bubalush/mntlab-pipeline.git'
+				sh 'gradle test'}
                      }
                          stage("Jacoco Tests") {
                         agent {label "SECOND"}
-                        steps {sh 'gradle test jacocoTestReport'}
+                        steps {
+				git url: 'https://github.com/bubalush/mntlab-pipeline.git'
+				sh 'gradle test jacocoTestReport'}
                      }
 				}
 	       }
