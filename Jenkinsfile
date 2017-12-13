@@ -46,7 +46,7 @@ pipeline {
         stage ("Triggering job and fetching artefact after finishing") {
 		agent any
 		steps {
-       		 build job: 'Project MNTLAB-lchernysheva-child1-build-job', quietPeriod: 2 
+       		 build job: 'MNTLAB-lchernysheva-child1-build-job', quietPeriod: 2 
         	}
 	}
                          
