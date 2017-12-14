@@ -69,7 +69,8 @@ pipeline {
 			jdk 'JDK 8'
 		}
 		steps {
-			sh '''gradle jar
+			sh '''cd $WORKSPACE/build/libs/
+			gradle jar
 			chmod 777 gradle-simple.jar
 			java -jar gradle-simple.jar'''
 			}
