@@ -1,19 +1,19 @@
 pipeline {
-    agent any
+    agent { label "master"}
 	tools {
         gradle "gradle4.3"
     }
   	
     stages {
         stage ("Preparation (Checking out)") {
-            agent any
+            agent { label "master"}
             steps {
                 git url: 'https://github.com/bubalush/mntlab-pipeline.git'
                 }
         }
         
         stage ("Building code") {
-		agent any
+		agent { label "master"}
 		steps {
 			sh 'gradle clean compileJava'
         	}
@@ -44,27 +44,27 @@ pipeline {
 	    
                          
         stage ("Triggering job and fetching artefact after finishing") {
-		agent {label "FIRST"}
+		agent { label "master"}
 		steps {
        		 build job: 'MNTLAB-lchernysheva-child1-build-job', parameters: [string(name: 'BRANCH_NAME', value: 'lchernysheva')], quietPeriod: 1 
         	}
 	}
                          
         stage ("Packaging and Publishing results") {
-	    agent none
+	    agent { label "master"}
             steps {
             	sh 'tar  -cvvzf pipeline-lchernysheva-$BUILD_NUMBER.tar.gz /var/lib/jenkins/workspace/MNTLAB-lchernysheva-child1-build-job/jobs.groovy /var/lib/jenkins/workspace/seed_for_Task10/Jenkinsfile'
                 archiveArtifacts '**.tar.gz'}
         }
                          
         stage ("Asking for manual approval") {
-	    agent none
+	    agent { label "master"}
             steps {
                 input 'Are you want to deploy artifacts?'}
         }
                          
         stage ("Deployment") {
-		agent none
+		agent { label "master"}
 		tools {
 			jdk 'JDK 8'
 		}
@@ -76,7 +76,7 @@ pipeline {
         }
                          
         stage ("Sending status") {
-	    agent none
+	    agent { label "master"}
             steps {
                 echo 'Pipeline was completed with \'SUCCESS\''
             }
