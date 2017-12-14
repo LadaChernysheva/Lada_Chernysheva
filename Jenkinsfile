@@ -44,7 +44,7 @@ pipeline {
 	    
                          
         stage ("Triggering job and fetching artefact after finishing") {
-		agent none
+		agent {label "FIRST"}
 		steps {
        		 build job: 'MNTLAB-lchernysheva-child1-build-job', parameters: [string(name: 'BRANCH_NAME', value: 'lchernysheva')], quietPeriod: 1 
         	}
