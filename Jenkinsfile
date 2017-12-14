@@ -44,27 +44,27 @@ pipeline {
 	    
                          
         stage ("Triggering job and fetching artefact after finishing") {
-		agent any
+		agent none
 		steps {
        		 build job: 'MNTLAB-lchernysheva-child1-build-job', parameters: [string(name: 'BRANCH_NAME', value: 'lchernysheva')], quietPeriod: 1 
         	}
 	}
                          
         stage ("Packaging and Publishing results") {
-	    agent any
+	    agent none
             steps {
             	sh 'tar  -cvvzf pipeline-lchernysheva-$BUILD_NUMBER.tar.gz /var/lib/jenkins/workspace/MNTLAB-lchernysheva-child1-build-job/jobs.groovy /var/lib/jenkins/workspace/seed_for_Task10/Jenkinsfile'
                 archiveArtifacts '**.tar.gz'}
         }
                          
         stage ("Asking for manual approval") {
-	    agent any
+	    agent none
             steps {
                 input 'Are you want to deploy artifacts?'}
         }
                          
         stage ("Deployment") {
-		agent any
+		agent none
 		tools {
 			jdk 'JDK 8'
 		}
@@ -74,7 +74,7 @@ pipeline {
         }
                          
         stage ("Sending status") {
-	    agent any
+	    agent none
             steps {
                 echo 'Pipeline was completed with \'SUCCESS\''
             }
