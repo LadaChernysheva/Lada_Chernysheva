@@ -69,7 +69,9 @@ pipeline {
 			jdk 'JDK 8'
 		}
 		steps {
-			sh 'java -jar gradle-simple.jar'
+			sh '''gradle jar
+			chmod 777 gradle-simple.jar
+			java -jar gradle-simple.jar'''
 			}
         }
                          
